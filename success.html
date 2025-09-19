@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Success</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #111;
+      color: #0f0;
+    }
+    .card {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 30px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>✅ Verification Successful!</h1>
+    <p id="message">You have been verified.</p>
+  </div>
+
+  <script>
+    // Read query parameters, e.g. ?msg=...&id=...
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get("msg");
+    const id = params.get("id");
+
+    if (msg) document.getElementById("message").textContent = decodeURIComponent(msg);
+    if (id) {
+      const extra = document.createElement("p");
+      extra.textContent = "Your Discord ID: " + id;
+      document.querySelector(".card").appendChild(extra);
+    }
+  </script>
+</body>
+</html>
