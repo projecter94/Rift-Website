@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Rift Verification - Callback</title>
+  <style>
+    body {
+      font-family: system-ui, Segoe UI, Roboto, Arial;
+      background: #0b0b0f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #141416;
+      padding: 28px;
+      border-radius: 12px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,.6);
+      text-align: center;
+    }
+    button {
+      background: #5865F2;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 16px;
+    }
+    button:hover {
+      background: #4752c4;
+    }
+    .loading {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Rift Verification</h2>
+    <p id="status" class="loading">Click below to complete verification.</p>
+    <button id="verifyBtn">Verify</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("userId");
+    const username = params.get("username");
+
+    // generate pseudo HWID
+    function getHWID() {
+      return btoa(navigator.userAgent + screen.width + screen.height + navigator.language);
+    }
+
+    document.getElementById("verifyBtn").addEventListener("click", async () => {
+      document.getElementById("status").textContent = "Verifying...";
+      try {
+        const hwid = getHWID();
+        const res = await fetch("/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, hwid })
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          window.location.href = "/success.html";
+        } else {
+          window.location.href = "/fail.html?msg=" + encodeURIComponent(data.message || "Verification failed");
+        }
+      } catch (err) {
+        window.location.href = "/fail.html?msg=Verification+error";
+      }
+    });
+  </script>
+</body>
+</html>
